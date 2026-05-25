@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasterChef en Casa — Guion Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A843;
+    --gold-light: #F2D888;
+    --dark: #0D0D0D;
+    --dark-card: #161616;
+    --dark-card-hover: #1E1E1E;
+    --red: #C0392B;
+    --red-soft: #E74C3C;
+    --cream: #F5F0E8;
+    --cream-muted: #D6CEBE;
+    --green: #27AE60;
+    --accent-blue: #2C3E6B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 30%, #1a1408 0%, var(--dark) 70%);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(212,168,67,0.015) 8deg 10deg);
+    animation: slowSpin 120s linear infinite;
+  }
+
+  @keyframes slowSpin { to { transform: rotate(360deg); } }
+
+  .hero-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 8px 24px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(3rem, 10vw, 7rem);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero h1 span {
+    display: block;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--cream-muted);
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards, pulse 2s ease-in-out 2s infinite;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* NAV TABS */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212,168,67,0.2);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+    padding: 18px 28px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .nav-tab:hover, .nav-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  .section.active { display: block; animation: fadeIn 0.5s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .section-header .round-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .section-header h2 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+
+  .section-header .section-desc {
+    font-style: italic;
+    color: var(--cream-muted);
+    margin-top: 12px;
+    font-size: 1.1rem;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--dark);
+    border: 2px solid var(--gold);
+  }
+
+  .tl-item.highlight::before {
+    background: var(--gold);
+    box-shadow: 0 0 12px rgba(212,168,67,0.5);
+  }
+
+  .tl-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .tl-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .tl-body { color: var(--cream-muted); }
+  .tl-body p { margin-bottom: 10px; }
+
+  /* DIALOGUE CARDS */
+  .dialogue {
+    background: var(--dark-card);
+    border-left: 3px solid var(--gold);
+    padding: 20px 24px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+  }
+
+  .dialogue.judge { border-left-color: var(--red); }
+  .dialogue.action { border-left-color: var(--green); font-style: italic; }
+
+  .dialogue .speaker {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .dialogue .speaker.host { color: var(--gold); }
+  .dialogue .speaker.judge-name { color: var(--red-soft); }
+  .dialogue .speaker.action-label { color: var(--green); }
+
+  .dialogue .text { color: var(--cream); }
+
+  /* INFO BOXES */
+  .info-box {
+    background: rgba(212,168,67,0.08);
+    border: 1px solid rgba(212,168,67,0.2);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .info-box h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .info-box ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .info-box ul li {
+    padding: 4px 0;
+    color: var(--cream-muted);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .info-box ul li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 8px;
+    top: 8px;
+  }
+
+  /* TIP */
+  .tip {
+    background: rgba(39,174,96,0.08);
+    border: 1px solid rgba(39,174,96,0.25);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-style: italic;
+    color: var(--cream-muted);
+    font-size: 0.95rem;
+  }
+
+  .tip::before {
+    content: '💡 ';
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    columns: 2;
+    column-gap: 24px;
+    margin: 16px 0;
+  }
+
+  .checklist label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    color: var(--cream-muted);
+    cursor: pointer;
+    break-inside: avoid;
+  }
+
+  .checklist input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 2px solid var(--gold);
+    border-radius: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .checklist input[type="checkbox"]:checked {
+    background: var(--gold);
+  }
+
+  .checklist input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    font-size: 14px;
+    color: var(--dark);
+    font-weight: bold;
+  }
+
+  .checklist input[type="checkbox"]:checked + span {
+    text-decoration: line-through;
+    color: rgba(245,240,232,0.4);
+  }
+
+  /* SCORING TABLE */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.95rem;
+  }
+
+  .score-table th {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .score-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(245,240,232,0.08);
+    color: var(--cream-muted);
+  }
+
+  .score-table td input {
+    width: 50px;
+    background: var(--dark-card);
+    border: 1px solid rgba(212,168,67,0.3);
+    color: var(--cream);
+    padding: 6px 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+  }
+
+  /* TIMER */
+  .timer-widget {
+    text-align: center;
+    margin: 40px 0;
+    padding: 40px;
+    background: var(--dark-card);
+    border-radius: 12px;
+    border: 1px solid rgba(212,168,67,0.15);
+  }
+
+  .timer-display {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(3rem, 10vw, 5rem);
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 8px;
+    margin: 16px 0;
+  }
+
+  .timer-display.warning { color: var(--red-soft); animation: blink 1s ease infinite; }
+
+  @keyframes blink { 50% { opacity: 0.6; } }
+
+  .timer-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .timer-btn {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 12px 36px;
+    border: 2px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    cursor: pointer;
+    margin: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .timer-btn:hover {
+    background: var(--gold);
+    color: var(--dark);
+  }
+
+  .timer-btn.stop { border-color: var(--red); color: var(--red); }
+  .timer-btn.stop:hover { background: var(--red); color: white; }
+
+  .timer-presets {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 6px 16px;
+    border: 1px solid rgba(212,168,67,0.3);
+    background: transparent;
+    color: var(--cream-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .preset-btn:hover, .preset-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 60px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.2);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .checklist { columns: 1; }
+    .nav-tab { padding: 14px 16px; font-size: 11px; letter-spacing: 2px; }
+    .timeline { padding-left: 32px; }
+    .dialogue { padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Edición Especial</div>
+  <h1>MasterChef<br><span>en Casa</span></h1>
+  <p class="hero-sub">Guion completo — 3 rondas, 1 noche inolvidable</p>
+  <div class="scroll-hint">↓ Scroll para empezar ↓</div>
+</div>
+
+<nav class="nav-bar">
+  <button class="nav-tab active" data-tab="prep">Preparación</button>
+  <button class="nav-tab" data-tab="r1">Ronda 1</button>
+  <button class="nav-tab" data-tab="r2">Ronda 2</button>
+  <button class="nav-tab" data-tab="r3">Ronda 3</button>
+  <button class="nav-tab" data-tab="final">Final</button>
+  <button class="nav-tab" data-tab="timer">Cronómetro</button>
+</nav>
+
+<!-- ======================== PREPARACIÓN ======================== -->
+<div class="section active" id="prep">
+  <div class="section-header">
+    <span class="round-number">Antes del show</span>
+    <h2>Preparación</h2>
+    <p class="section-desc">Todo lo que necesitas tener listo antes de que empiece la magia</p>
+  </div>
+
+  <div class="info-box">
+    <h4>Ambientación del plató</h4>
+    <ul>
+      <li>Despeja la cocina al máximo: solo lo esencial en la encimera</li>
+      <li>Monta dos "estaciones" separadas con tabla de cortar, paño y espacio</li>
+      <li>Pon luces cálidas (velas fuera de la zona de fuego, lámparas bajas)</li>
+      <li>Imprime o escribe a mano un cartel "MasterChef en Casa" en la entrada de la cocina</li>
+      <li>Prepara una playlist: la sintonía de MasterChef + música instrumental dramática</li>
+      <li>Ten dos delantales listos (puedes personalizarlos con rotulador con vuestros nombres)</li>
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <h4>Checklist de materiales</h4>
+    <div class="checklist">
+      <label><input type="checkbox"><span>Delantales (x2)</span></label>
+      <label><input type="checkbox"><span>Cronómetro visible (tablet/TV)</span></label>
+      <label><input type="checkbox"><span>Tarjetas con las pruebas en sobre cerrado</span></label>
+      <label><input type="checkbox"><span>Ingredientes Ronda 1 (comprados y listos)</span></label>
+      <label><input type="checkbox"><span>Caja misteriosa con ingredientes Ronda 2</span></label>
+      <label><input type="checkbox"><span>Ingredientes Ronda 3 (a elegir juntos)</span></label>
+      <label><input type="checkbox"><span>Fichas de puntuación impresas</span></label>
+      <label><input type="checkbox"><span>Altavoz con música</span></label>
+      <label><input type="checkbox"><span>Vela y vino para la cena final</span></label>
+      <label><input type="checkbox"><span>Cámara o móvil para fotos del emplatado</span></label>
+      <label><input type="checkbox"><span>Premio simbólico para el ganador</span></label>
+      <label><input type="checkbox"><span>Boles para mise en place</span></label>
+    </div>
+  </div>
+
+  <div class="tip">Prepara la caja misteriosa de la Ronda 2 el día antes. Métela en una caja bonita (de zapatos forrada, una cesta…). Que no la vea tu novia hasta el momento.</div>
+
+  <div class="info-box">
+    <h4>Sugerencias para la caja misteriosa (Ronda 2)</h4>
+    <ul>
+      <li><strong>Opción fácil:</strong> chocolate, nata, galletas, fresas, azúcar, mantequilla</li>
+      <li><strong>Opción media:</strong> harina, huevos, limones, azúcar, mantequilla, mermelada</li>
+      <li><strong>Opción atrevida:</strong> chocolate, chile, queso mascarpone, plátano, bizcochos de soletilla, café</li>
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <h4>Timing general de la noche</h4>
+    <ul>
+      <li><strong>20:00</strong> — Ceremonia de apertura (10 min)</li>
+      <li><strong>20:10</strong> — Ronda 1: Plato principal idéntico (45 min cocina + 10 min juicio)</li>
+      <li><strong>21:05</strong> — Descanso con copa de vino (10 min)</li>
+      <li><strong>21:15</strong> — Ronda 2: Postre caja misteriosa (30 min cocina + 10 min juicio)</li>
+      <li><strong>21:55</strong> — Ronda 3: Cocina en equipo (30 min)</li>
+      <li><strong>22:25</strong> — Ceremonia final + cena romántica</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======================== RONDA 1 ======================== -->
+<div class="section" id="r1">
+  <div class="section-header">
+    <span class="round-number">Ronda 1 · 45 minutos</span>
+    <h2>El Plato Principal</h2>
+    <p class="section-desc">El mismo plato, dos versiones — que gane el mejor paladar</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-time">20:00 — Ceremonia de apertura</div>
+      <div class="tl-title">Bienvenida al show</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú (presentador)</div>
+          <div class="text">«Buenas noches y bienvenida… a MasterChef en Casa. Esta noche, dos cocineros se enfrentan en tres pruebas para demostrar quién manda en esta cocina. Solo uno se llevará el delantal de oro. ¿Estás preparada?»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Pon la sintonía de MasterChef. Entrégale su delantal con dramatismo. Poneos los dos el delantal mirándoos a los ojos, serios, aguantando la risa.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">20:05 — Revelación de la prueba</div>
+      <div class="tl-title">Apertura del sobre</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«En esta primera prueba, los dos vais a cocinar… el mismo plato. Tendréis exactamente los mismos ingredientes, el mismo tiempo, y las mismas herramientas. La diferencia la marcará vuestro talento.»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Abre el sobre con la tarjeta. Léela en voz alta con pausa dramática. Ejemplo: «El plato de esta noche es… [pausa]… risotto de setas con parmesano.» Muestra los ingredientes ya organizados en las dos estaciones.</div>
+        </div>
+        <div class="tip">Elige un plato que los dos podáis hacer: risotto, pasta carbonara, pollo al limón con guarnición, tacos, hamburguesas gourmet… que tenga margen para que cada uno le dé su toque.</div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">20:10 — ¡Fuego!</div>
+      <div class="tl-title">Empieza la cocina</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Cocineros, tenéis 45 minutos para preparar y emplatar vuestro plato. El tiempo empieza… ¡YA!»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Arranca el cronómetro (pestaña Cronómetro → 45 min). Sube la música. ¡A cocinar!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">20:30 — Ecuador de la prueba</div>
+      <div class="tl-title">Comentarios de juez</div>
+      <div class="tl-body">
+        <div class="dialogue judge">
+          <div class="speaker judge-name">Juez (cualquiera de los dos, en plan broma)</div>
+          <div class="text">«Paseo por las estaciones… A ver, ¿qué tenemos aquí? Esto tiene buena pinta, pero ¿no se te está pasando la cocción?» / «Interesante, interesante… arriesgado.»</div>
+        </div>
+        <div class="tip">Id comentando mutuamente lo que hace el otro, imitando a los jueces del programa. "¿Eso es improvisación o desesperación?" funciona siempre.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">20:50 — Último minuto</div>
+      <div class="tl-title">La tensión final</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«¡ÚLTIMO MINUTO! ¡Emplatad, emplatad! ¡Quiero ver platos bonitos, limpieza, que esto es MasterChef!»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Sube el volumen de la música dramática. Cuenta los últimos 10 segundos en voz alta: «¡Diez, nueve, ocho…!»</div>
+        </div>
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«¡TIEMPO! ¡Manos fuera de los platos! Lo que esté, está. Lo que no… ya no importa.»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">20:55 — Juicio</div>
+      <div class="tl-title">Valoración y puntuación</div>
+      <div class="tl-body">
+        <p>Haceos fotos de los platos. Probad primero el del otro y valorad con seriedad cómica.</p>
+        <div class="dialogue judge">
+          <div class="speaker judge-name">Juez</div>
+          <div class="text">«Visualmente, me entra por los ojos. La cocción… [pausa]… está en su punto. El sabor… [cierra los ojos]… necesita un toque más de sal, pero el conjunto es muy notable.»</div>
+        </div>
+        <p style="margin-top: 16px;">Puntuad con esta tabla:</p>
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Cocinero 1</th>
+              <th>Cocinero 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Sabor (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Presentación (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Punto de cocción (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Creatividad (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr style="font-weight:bold;"><td>TOTAL</td><td><input type="number" min="0" max="40" style="border-color: var(--gold);"></td><td><input type="number" min="0" max="40" style="border-color: var(--gold);"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">21:05 — Pausa</div>
+      <div class="tl-title">Copa de vino y recogida express</div>
+      <div class="tl-body">
+        <p>Recoged un poco entre los dos, tomad una copa de vino, comentad la jugada. 10 minutos de descanso.</p>
+        <div class="tip">Este es un buen momento para poner música más chill y reíros de los desastres culinarios.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== RONDA 2 ======================== -->
+<div class="section" id="r2">
+  <div class="section-header">
+    <span class="round-number">Ronda 2 · 30 minutos</span>
+    <h2>La Caja Misteriosa</h2>
+    <p class="section-desc">Postre libre con ingredientes sorpresa — creatividad al poder</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-time">21:15 — La revelación</div>
+      <div class="tl-title">Apertura de la caja</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Cocineros, esta segunda prueba pondrá a prueba vuestra creatividad. Ante vosotros… la Caja Misteriosa.»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Pon la caja en el centro con dramatismo. Música de tensión. «A la de tres, levantamos la tapa. Uno… dos… ¡TRES!» Levantáis la tapa juntos.</div>
+        </div>
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Con estos ingredientes, y SOLO con estos ingredientes, tendréis que crear un postre en 30 minutos. Podéis usar también lo básico de la despensa: sal, aceite, especias. El diseño del postre es totalmente libre. ¡Sorprendedme!»</div>
+        </div>
+        <div class="tip">Deja claro qué se considera "básico de despensa" para que no haya conflictos: sal, pimienta, aceite, vinagre, especias secas, y poco más.</div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">21:17 — ¡Fuego!</div>
+      <div class="tl-title">Arranca el reloj</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Tenéis 30 minutos. Pensad rápido, cocineros. El tiempo empieza… ¡YA!»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Cronómetro → 30 min. En esta ronda la presión es mayor: menos tiempo, ingredientes desconocidos. El estrés es parte de la diversión.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">21:27 — Mitad de prueba</div>
+      <div class="tl-title">Paseo del juez</div>
+      <div class="tl-body">
+        <div class="dialogue judge">
+          <div class="speaker judge-name">Juez</div>
+          <div class="text">«¿Qué estás haciendo? ¿Un… qué? ¿Y eso te va a dar tiempo? Mmm, vale, confío en ti. Bueno, más o menos.»</div>
+        </div>
+        <p>Preguntaos mutuamente qué estáis preparando. Es el momento de la narración:</p>
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«[Nombre] parece que va a por una mousse rápida, pero le veo cara de preocupación… ¿Llegará a montarla a tiempo? Mientras tanto, [nombre] apuesta por algo más rústico… ¿Será genialidad o locura?»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">21:42 — Último minuto</div>
+      <div class="tl-title">Cuenta atrás final</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«¡ÚLTIMO MINUTO! ¡Quiero ver postres en el plato, no en la sartén! ¡Emplatad! ¡Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… TIEMPO! ¡Manos arriba!»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">21:45 — Juicio</div>
+      <div class="tl-title">Degustación del postre</div>
+      <div class="tl-body">
+        <p>Fotos del emplatado. Probad el postre del otro con cara de juez severo.</p>
+        <div class="dialogue judge">
+          <div class="speaker judge-name">Juez</div>
+          <div class="text">«A ver… [prueba con cuchara]… [pausa larguísima]… No me lo esperaba. Esto está… [otra pausa]… muy rico. El uso del [ingrediente] es inteligente. Bien jugado.»</div>
+        </div>
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Cocinero 1</th>
+              <th>Cocinero 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Sabor (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Presentación (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Creatividad (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr><td>Uso de ingredientes (0-10)</td><td><input type="number" min="0" max="10"></td><td><input type="number" min="0" max="10"></td></tr>
+            <tr style="font-weight:bold;"><td>TOTAL</td><td><input type="number" min="0" max="40" style="border-color: var(--gold);"></td><td><input type="number" min="0" max="40" style="border-color: var(--gold);"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== RONDA 3 ======================== -->
+<div class="section" id="r3">
+  <div class="section-header">
+    <span class="round-number">Ronda 3 · 30 minutos</span>
+    <h2>Cocinamos Juntos</h2>
+    <p class="section-desc">Se acabó la competición — ahora sois un equipo</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-time">21:55 — Cambio de formato</div>
+      <div class="tl-title">El giro del show</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Cocineros… habéis competido, habéis luchado, habéis demostrado lo que valéis. Pero en MasterChef en Casa hay algo más importante que ganar… y es que esto lo hacemos juntos. En esta última prueba, no hay competición. Vais a cocinar un plato… en equipo. Juntos. Uno.»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Cambio de música a algo más bonito, romántico pero con ritmo. Bajad la intensidad. Este es el momento tierno de la noche.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">21:58 — La decisión</div>
+      <div class="tl-title">¿Qué cocinamos?</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Tenéis 2 minutos para decidir juntos qué plato vais a preparar. Puede ser un entrante, un plato especial, algo que os recuerde a algún momento vuestro… Lo que queráis. Pero decidid juntos.»</div>
+        </div>
+        <div class="info-box">
+          <h4>Ideas para el plato en equipo</h4>
+          <ul>
+            <li>Algo que recuerde a vuestra primera cita o un viaje juntos</li>
+            <li>La receta favorita de uno que el otro nunca ha probado</li>
+            <li>Un plato de comfort food que os encante a los dos</li>
+            <li>Algo nuevo que siempre habéis querido intentar</li>
+            <li>Unos buenos nachos o una tabla de quesos y dulces (si estáis cansados de cocinar 😉)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">22:00 — A cocinar</div>
+      <div class="tl-title">Trabajo en equipo</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Muy bien. Tenéis 30 minutos para crear algo especial juntos. No hay puntos, no hay jurado. Solo vosotros dos y una cocina. ¡Adelante!»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Cronómetro → 30 min (más relajado, se puede parar si hace falta). Repartid tareas. Uno corta, otro sofríe. Hablad, reíd, disfrutad el momento.</div>
+        </div>
+        <div class="tip">Esta ronda es la más importante aunque no tenga puntuación. Es donde la noche pasa de "juego" a "recuerdo bonito". No tengas prisa.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">22:25 — Emplatado final</div>
+      <div class="tl-title">Vuestro plato</div>
+      <div class="tl-body">
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Emplatad juntos. Haceos una foto con el plato. Este es vuestro plato, de los dos.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== FINAL ======================== -->
+<div class="section" id="final">
+  <div class="section-header">
+    <span class="round-number">El gran final</span>
+    <h2>La Ceremonia</h2>
+    <p class="section-desc">El veredicto, el premio y la cena</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-time">22:25 — El veredicto</div>
+      <div class="tl-title">Suma de puntuaciones</div>
+      <div class="tl-body">
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Ha llegado el momento. Después de dos pruebas intensas, es hora de saber quién se corona como ganador de la primera edición de MasterChef en Casa.»</div>
+        </div>
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Suma las puntuaciones de las Rondas 1 y 2. Lee los resultados categoría a categoría para mantener la tensión. Música dramática de fondo.</div>
+        </div>
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Y el ganador, o la ganadora, de MasterChef en Casa es… [pausa larguísima, mira a un lado, mira al otro]… ¡[NOMBRE]!»</div>
+        </div>
+        <div class="tip">Si ella gana, perfecto. Si ganas tú, dale el premio igualmente con un "pero la verdadera ganadora siempre eras tú" — cursi pero infalible. Si hay empate, declaraos co-campeones.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-time">22:30 — El premio</div>
+      <div class="tl-title">Entrega del delantal de oro</div>
+      <div class="tl-body">
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Entrega el premio simbólico: un delantal dorado (puedes customizar uno barato con pintura dorada), un certificado hecho a mano, un vale por algo especial (masaje, elegir serie, desayuno en la cama…), o simplemente una copa de champán o cava.</div>
+        </div>
+        <div class="dialogue">
+          <div class="speaker host">Tú</div>
+          <div class="text">«Enhorabuena, Chef. Te has ganado el respeto de esta cocina. Y ahora… a disfrutar de lo que hemos cocinado juntos.»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item highlight">
+      <div class="tl-time">22:35 — La cena</div>
+      <div class="tl-title">A disfrutar</div>
+      <div class="tl-body">
+        <div class="dialogue action">
+          <div class="speaker action-label">Acción</div>
+          <div class="text">Poned la mesa bonita. Vela, servilletas de tela si tenéis, el buen vino. Sentaos a cenar todo lo que habéis cocinado: el plato principal (el mejor de los dos o un poco de cada), el postre, y el plato en equipo. Música suave de fondo. Brindar. Disfrutar.</div>
+        </div>
+        <div class="tip">Si quieres rematar la noche, ten preparada una carta o nota escondida bajo el plato o la servilleta con un mensaje bonito para ella.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== TIMER ======================== -->
+<div class="section" id="timer">
+  <div class="section-header">
+    <span class="round-number">Herramienta</span>
+    <h2>Cronómetro</h2>
+    <p class="section-desc">Usa esto en la tele o tablet durante las pruebas</p>
+  </div>
+
+  <div class="timer-widget">
+    <div class="timer-label" id="timer-label">Selecciona una prueba</div>
+    <div class="timer-presets">
+      <button class="preset-btn" onclick="setTimer(45)">45 min · Ronda 1</button>
+      <button class="preset-btn" onclick="setTimer(30)">30 min · Ronda 2</button>
+      <button class="preset-btn" onclick="setTimer(30)">30 min · Ronda 3</button>
+      <button class="preset-btn" onclick="setTimer(5)">5 min · Emplatado</button>
+      <button class="preset-btn" onclick="setTimer(1)">1 min · Cuenta atrás</button>
+    </div>
+    <div class="timer-display" id="timer-display">00:00</div>
+    <div>
+      <button class="timer-btn" id="startBtn" onclick="startTimer()">▶ Empezar</button>
+      <button class="timer-btn stop" id="stopBtn" onclick="stopTimer()">■ Parar</button>
+      <button class="timer-btn" onclick="resetTimer()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">MasterChef en Casa · Hecho con amor</div>
+
+<script>
+  // NAV
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      window.scrollTo({ top: document.querySelector('.nav-bar').offsetTop, behavior: 'smooth' });
+    });
+  });
+
+  // TIMER
+  let totalSeconds = 0;
+  let remaining = 0;
+  let interval = null;
+  const display = document.getElementById('timer-display');
+  const label = document.getElementById('timer-label');
+
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  }
+
+  function setTimer(min) {
+    stopTimer();
+    totalSeconds = min * 60;
+    remaining = totalSeconds;
+    display.textContent = fmt(remaining);
+    display.classList.remove('warning');
+    label.textContent = min + ' minutos';
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  function startTimer() {
+    if (interval || remaining <= 0) return;
+    interval = setInterval(() => {
+      remaining--;
+      display.textContent = fmt(remaining);
+      if (remaining <= 60) display.classList.add('warning');
+      if (remaining <= 0) {
+        stopTimer();
+        display.textContent = '¡TIEMPO!';
+        label.textContent = '¡MANOS FUERA!';
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(interval);
+    interval = null;
+  }
+
+  function resetTimer() {
+    stopTimer();
+    remaining = totalSeconds;
+    display.textContent = fmt(remaining);
+    display.classList.remove('warning');
+  }
+</script>
+
+</body>
+</html>
